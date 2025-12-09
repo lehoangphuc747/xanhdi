@@ -1,0 +1,88 @@
+---
+interface Props {
+  currentPostId: string;
+  currentTags?: string[];
+  allPosts: any[];
+  maxItems?: number;
+}
+
+const { currentPostId, currentTags = [], allPosts, maxItems = 3 } = Astro.props;
+
+// Find related posts based on tags
+const relatedPosts = allPosts
+  .filter((post) => post.id !== currentPostId)
+  .map((post) => {
+    const commonTags = post.data.tags?.filter((tag: string) => 
+      currentTags.includes(tag)
+    ).length || 0;
+    return { ...post, commonTags };
+  })
+  .filter((post) => post.commonTags > 0)
+  .sort((a, b) => b.commonTags - a.commonTags)
+  .slice(0, maxItems);
+
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('vi-VN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+};
+---
+
+{relatedPosts.length > 0 && (
+  <section class="mt-12 pt-8 border-t border-border">
+    <h2 class="text-2xl font-bold text-foreground mb-6 flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+        <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+      </svg>
+      Tin tức liên quan
+    </h2>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      {relatedPosts.map((post) => (
+        <article class="bg-card rounded-lg overflow-hidden border border-border hover:border-primary/50 transition-all duration-300 shadow-sm hover:shadow-md group">
+          <a href={`/TinTuc/${post.id}`} class="block">
+            {post.data.image ? (
+              <div class="relative h-40 overflow-hidden">
+                <img
+                  src={post.data.image}
+                  alt={post.data.title}
+                  class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  loading="lazy"
+                />
+              </div>
+            ) : (
+              <div class="h-40 bg-gradient-to-br from-primary/10 to-secondary/10"></div>
+            )}
+            
+            <div class="p-4">
+              <time class="text-xs text-muted-foreground">
+                {formatDate(post.data.pubDate)}
+              </time>
+              
+              <h3 class="text-base font-semibold text-foreground mt-2 line-clamp-2 group-hover:text-primary transition-colors">
+                {post.data.title}
+              </h3>
+              
+              <p class="text-sm text-muted-foreground mt-2 line-clamp-2">
+                {post.data.description}
+              </p>
+              
+              {post.data.tags && post.data.tags.length > 0 && (
+                <div class="flex flex-wrap gap-1 mt-3">
+                  {post.data.tags.slice(0, 2).map((tag: string) => (
+                    <span class="text-xs px-2 py-0.5 bg-primary/10 text-primary rounded-full">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              )}
+            </div>
+          </a>
+        </article>
+      ))}
+    </div>
+  </section>
+)}

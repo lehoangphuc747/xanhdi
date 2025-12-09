@@ -1,0 +1,187 @@
+<script is:inline>
+  // View switching functionality
+  const timelineView = document.getElementById('timeline-view');
+  const gridView = document.getElementById('grid-view');
+  const expandedView = document.getElementById('expanded-view');
+  const filterView = document.getElementById('filter-view');
+
+  // View buttons
+  const timelineBtn = document.querySelector('[data-view="timeline"]');
+  const gridBtn = document.querySelector('[data-view="grid"]');
+  const expandBtn = document.querySelector('[data-expand="true"]');
+  const expandText = document.querySelector('.expand-text');
+  const sortSelect = document.querySelector('[data-sort="select"]');
+
+  let isExpanded = false;
+  let currentView = 'timeline'; // Track current view
+
+  function hideAllViews() {
+    timelineView?.classList.add('hidden');
+    gridView?.classList.add('hidden');
+    expandedView?.classList.add('hidden');
+    filterView?.classList.add('hidden');
+  }
+
+  function showView(viewElement) {
+    hideAllViews();
+    viewElement?.classList.remove('hidden');
+  }
+
+  function updateExpandBtn() {
+    if (!expandText) return;
+    expandText.textContent = isExpanded ? 'Thu gọn' : 'Mở rộng';
+  }
+
+  // Month toggle functionality for Timeline view
+  function setupMonthToggles() {
+    const monthToggles = document.querySelectorAll('.month-toggle');
+    monthToggles.forEach(toggle => {
+      toggle.addEventListener('click', (e) => {
+        e.preventDefault();
+        const monthId = toggle.getAttribute('data-month-id');
+        const postsContainer = document.getElementById(monthId);
+        
+        if (postsContainer) {
+          postsContainer.classList.toggle('hidden');
+        }
+      });
+    });
+  }
+
+  // Expand all / Collapse all functionality
+  function expandAllMonths() {
+    const allMonthPosts = document.querySelectorAll('.month-posts');
+    allMonthPosts.forEach(posts => {
+      posts.classList.remove('hidden');
+    });
+  }
+
+  function collapseAllMonths() {
+    const allMonthPosts = document.querySelectorAll('.month-posts');
+    allMonthPosts.forEach(posts => {
+      posts.classList.add('hidden');
+    });
+  }
+
+  // Timeline view
+  timelineBtn?.addEventListener('click', () => {
+    showView(timelineView);
+    timelineBtn.classList.add('bg-primary', 'text-primary-foreground');
+    timelineBtn.classList.remove('border', 'border-input', 'bg-background', 'hover:bg-accent');
+    gridBtn?.classList.remove('bg-primary', 'text-primary-foreground');
+    gridBtn?.classList.add('border', 'border-input', 'bg-background', 'hover:bg-accent');
+    isExpanded = false;
+    currentView = 'timeline';
+    updateExpandBtn();
+    sortSelect.value = 'newest';
+    collapseAllMonths(); // Reset to collapsed state
+  });
+
+  // Grid view
+  gridBtn?.addEventListener('click', () => {
+    showView(gridView);
+    gridBtn.classList.add('bg-primary', 'text-primary-foreground');
+    gridBtn.classList.remove('border', 'border-input', 'bg-background', 'hover:bg-accent');
+    timelineBtn?.classList.remove('bg-primary', 'text-primary-foreground');
+    timelineBtn?.classList.add('border', 'border-input', 'bg-background', 'hover:bg-accent');
+    isExpanded = false;
+    currentView = 'grid';
+    updateExpandBtn();
+    sortSelect.value = 'newest';
+  });
+
+  // Expand/Collapse button
+  expandBtn?.addEventListener('click', () => {
+    if (currentView === 'timeline') {
+      // Toggle expand/collapse of month posts in timeline view
+      isExpanded = !isExpanded;
+      updateExpandBtn();
+      
+      if (isExpanded) {
+        expandAllMonths();
+      } else {
+        collapseAllMonths();
+      }
+    } else if (currentView === 'grid') {
+      // If in Grid view, switch to Timeline and expand
+      showView(timelineView);
+      currentView = 'timeline';
+      isExpanded = true;
+      updateExpandBtn();
+      expandAllMonths();
+      
+      // Update button states
+      timelineBtn.classList.add('bg-primary', 'text-primary-foreground');
+      timelineBtn.classList.remove('border', 'border-input', 'bg-background', 'hover:bg-accent');
+      gridBtn?.classList.remove('bg-primary', 'text-primary-foreground');
+      gridBtn?.classList.add('border', 'border-input', 'bg-background', 'hover:bg-accent');
+    } else {
+      // For other views, switch to expanded view
+      isExpanded = !isExpanded;
+      updateExpandBtn();
+
+      if (isExpanded) {
+        showView(expandedView);
+        currentView = 'expanded';
+      } else {
+        showView(timelineView);
+        currentView = 'timeline';
+      }
+    }
+  });
+
+  // Sort select - apply to current view
+  sortSelect?.addEventListener('change', () => {
+    const sortOrder = sortSelect.value;
+    
+    if (currentView === 'timeline') {
+      // Hide all timeline sort versions and show selected one
+      document.getElementById('timeline-newest')?.classList.add('hidden');
+      document.getElementById('timeline-oldest')?.classList.add('hidden');
+      document.getElementById('timeline-az')?.classList.add('hidden');
+      document.getElementById(`timeline-${sortOrder}`)?.classList.remove('hidden');
+      
+      // Re-setup month toggles after switching sort
+      setupMonthToggles();
+      
+      // Maintain expand/collapse state
+      if (isExpanded) {
+        expandAllMonths();
+      } else {
+        collapseAllMonths();
+      }
+    } else if (currentView === 'grid') {
+      // Hide all grid sort versions and show selected one
+      document.getElementById('grid-newest')?.classList.add('hidden');
+      document.getElementById('grid-oldest')?.classList.add('hidden');
+      document.getElementById('grid-az')?.classList.add('hidden');
+      document.getElementById(`grid-${sortOrder}`)?.classList.remove('hidden');
+    } else {
+      // For other views, show filter view
+      showView(filterView);
+      currentView = 'filter';
+    }
+  });
+
+  // Scroll to Top Button functionality
+  const scrollToTopBtn = document.getElementById('scrollToTopBtn');
+
+  window.addEventListener('scroll', () => {
+    if (window.scrollY > 300) {
+      scrollToTopBtn?.classList.remove('opacity-0', 'pointer-events-none');
+      scrollToTopBtn?.classList.add('opacity-100', 'pointer-events-auto');
+    } else {
+      scrollToTopBtn?.classList.add('opacity-0', 'pointer-events-none');
+      scrollToTopBtn?.classList.remove('opacity-100', 'pointer-events-auto');
+    }
+  });
+
+  scrollToTopBtn?.addEventListener('click', () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  });
+
+  // Initialize
+  updateExpandBtn();
+  showView(timelineView);
+  setupMonthToggles();
+</script>

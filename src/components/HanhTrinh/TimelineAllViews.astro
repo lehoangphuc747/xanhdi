@@ -1,0 +1,345 @@
+---
+interface Post {
+  id: string;
+  slug?: string;
+  data: {
+    title: string;
+    description: string;
+    pubDate: Date;
+    image?: string;
+  };
+}
+
+interface Props {
+  timeline: Array<{
+    year: number;
+    months: Array<{
+      month: string;
+      journeys: number;
+      journeyName: string;
+      posts: Post[];
+    }>;
+  }>;
+  viewMode: 'timeline' | 'grid' | 'expanded' | 'filter';
+  sortOrder?: 'newest' | 'oldest' | 'a-z';
+}
+
+const { timeline, viewMode, sortOrder = 'newest' } = Astro.props;
+
+// Flatten for filter/grid/expanded views
+const allPosts = timeline.flatMap((year) =>
+  year.months.flatMap((month) =>
+    month.posts.map((post) => ({
+      ...post,
+      year: year.year,
+      month: month.month,
+      journeys: month.journeys,
+    }))
+  )
+);
+
+// Sort posts for filter/grid/expanded
+let sortedPosts = [...allPosts];
+if (sortOrder === 'newest') {
+  sortedPosts.sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime());
+} else if (sortOrder === 'oldest') {
+  sortedPosts.sort((a, b) => a.data.pubDate.getTime() - b.data.pubDate.getTime());
+} else if (sortOrder === 'a-z') {
+  sortedPosts.sort((a, b) => a.data.title.localeCompare(b.data.title, 'vi'));
+}
+
+// Group posts by year
+const groupedByYear = sortedPosts.reduce((acc, post) => {
+  if (!acc[post.year]) acc[post.year] = [];
+  acc[post.year].push(post);
+  return acc;
+}, {} as Record<number, typeof sortedPosts>);
+---
+
+{/* TIMELINE VIEW */}
+{viewMode === 'timeline' && (
+  <div class="min-h-screen w-full">
+    <div class="p-4 sm:p-8">
+      <div class="relative max-w-4xl mx-auto">
+        {/* Vertical Timeline Line */}
+        <div class="absolute top-8 bottom-0 w-0.5 bg-gradient-to-b from-primary/20 via-secondary/30 to-primary/20 rounded-full z-0 left-4 sm:left-1/2 sm:transform sm:-translate-x-1/2"></div>
+
+        {/* Timeline Years */}
+        {timeline.map((yearData, yearIndex) => (
+          <div class="relative mb-16 pt-8">
+            {/* Year Label */}
+            <div class="absolute z-10 top-8 -translate-y-1/2 left-4 -translate-x-1/2 sm:left-1/2 sm:transform sm:-translate-x-1/2">
+              <div class="bg-primary text-primary-foreground px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+                {yearData.year}
+              </div>
+            </div>
+
+            {/* Year Content */}
+            <div class="mt-24">
+              {yearData.months.map((monthData, index) => {
+                const isLeft = index % 2 === 0;
+                const monthId = `month-${yearData.year}-${index}`;
+                return (
+                  <div class="relative mb-8 group">
+                    {/* Timeline Dot */}
+                    <div class="absolute top-4 -translate-y-1/2 w-4 h-4 rounded-full bg-secondary border-4 border-background shadow-md group-hover:scale-110 transition-transform z-10 left-4 -translate-x-1/2 sm:left-1/2 sm:transform sm:-translate-x-1/2"></div>
+
+                    {/* Timeline Content */}
+                    <div class={`relative ${isLeft ? 'w-[calc(100%-4rem)] ml-16 sm:w-[calc(50%-3rem)] sm:ml-[calc(50%+3rem)]' : 'w-[calc(100%-4rem)] ml-16 sm:w-[calc(50%-3rem)] sm:ml-0 sm:mr-[calc(50%+3rem)]'}`}>
+                      <div class="relative">
+                        {/* Connection Line */}
+                        <div class={`absolute top-4 -translate-y-1/2 h-0.5 bg-border z-0 w-8 ${isLeft ? 'right-full sm:right-full sm:w-12' : 'right-full sm:left-full sm:right-auto sm:w-12'}`}></div>
+
+                        {/* Month Card - Clickable */}
+                        <button 
+                          class="month-toggle w-full text-left bg-card p-3 rounded-lg shadow-md group-hover:bg-secondary/20 transition-colors"
+                          data-month-id={monthId}
+                        >
+                          <h3 class="font-bold text-primary">{monthData.month}</h3>
+                          <p class="text-xs text-muted-foreground">{monthData.journeys} hành trình</p>
+                        </button>
+
+                        {/* Posts List - Expandable */}
+                        <div 
+                          id={monthId}
+                          class="month-posts hidden mt-3 space-y-2"
+                        >
+                          {monthData.posts.map((post) => (
+                            <a 
+                              href={`/HanhTrinh/${post.slug || post.id}`}
+                              class="block bg-card/50 rounded-lg border border-border/50 hover:border-secondary/50 hover:bg-card transition-all overflow-hidden"
+                            >
+                              {post.data.image && (
+                                <div class="w-full h-32 overflow-hidden bg-muted">
+                                  <img
+                                    src={post.data.image}
+                                    alt={post.data.title}
+                                    class="w-full h-full object-cover"
+                                    loading="lazy"
+                                  />
+                                </div>
+                              )}
+                              <div class="p-3">
+                                <h4 class="font-semibold text-sm text-primary mb-1">{post.data.title}</h4>
+                                <p class="text-xs text-muted-foreground line-clamp-2">{post.data.description}</p>
+                              </div>
+                            </a>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+{/* GRID VIEW */}
+{viewMode === 'grid' && (
+  <div class="min-h-screen w-full">
+    <div class="p-4 sm:p-8">
+      <div class="max-w-6xl mx-auto">
+        {Object.entries(groupedByYear).map(([year, posts]) => (
+          <div class="mb-12">
+            {/* Year Title */}
+            <div class="mb-6">
+              <h2 class="text-3xl font-bold text-primary bg-gradient-to-r from-primary to-secondary/50 bg-clip-text text-transparent">
+                {year}
+              </h2>
+              <div class="h-1 w-20 bg-gradient-to-r from-primary to-secondary rounded-full mt-2"></div>
+            </div>
+
+            {/* Grid Items */}
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+              {posts.map((post) => (
+                <a href={`/HanhTrinh/${post.slug || post.id}`} class="group relative cursor-pointer">
+                  {/* Card */}
+                  <div class="bg-card p-6 rounded-xl shadow-md border border-border hover:shadow-lg hover:border-secondary/50 transition-all duration-300 h-full flex flex-col">
+                    {/* Image */}
+                    {post.data.image && (
+                      <div class="mb-4 -mx-6 -mt-6 h-40 overflow-hidden rounded-t-xl bg-muted">
+                        <img
+                          src={post.data.image}
+                          alt={post.data.title}
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                        />
+                      </div>
+                    )}
+
+                    {/* Content */}
+                    <div class="flex-grow">
+                      <div class="inline-block px-3 py-1 bg-primary/10 rounded-full mb-3">
+                        <span class="text-xs font-semibold text-primary">{post.month}</span>
+                      </div>
+                      <h3 class="text-lg font-bold text-primary mb-2 line-clamp-2">{post.data.title}</h3>
+                      <p class="text-sm text-muted-foreground line-clamp-3">{post.data.description}</p>
+                    </div>
+
+                    {/* Footer */}
+                    <div class="mt-4 pt-4 border-t border-border/50">
+                      <button class="inline-flex items-center gap-2 text-sm font-medium text-secondary hover:text-primary transition-colors group/btn">
+                        <span>Xem chi tiết</span>
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="16"
+                          height="16"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          class="group-hover/btn:translate-x-1 transition-transform"
+                        >
+                          <path d="m9 18 6-6-6-6"></path>
+                        </svg>
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Hover Background Effect */}
+                  <div class="absolute inset-0 bg-gradient-to-br from-primary/5 to-secondary/5 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"></div>
+                </a>
+              ))}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+{/* EXPANDED VIEW (with expandable posts) */}
+{viewMode === 'expanded' && (
+  <div class="min-h-screen w-full">
+    <div class="p-4 sm:p-8">
+      <div class="max-w-4xl mx-auto space-y-6">
+        {sortedPosts.map((post, index) => (
+          <div class="group">
+            <a href={`/HanhTrinh/${post.slug || post.id}`} class="block bg-card p-6 rounded-xl shadow-md border border-border hover:shadow-lg hover:border-secondary/50 transition-all duration-300">
+              <div class="flex flex-col sm:flex-row gap-6">
+                {/* Image */}
+                {post.data.image && (
+                  <div class="sm:w-48 h-32 overflow-hidden rounded-lg bg-muted flex-shrink-0">
+                    <img
+                      src={post.data.image}
+                      alt={post.data.title}
+                      class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                  </div>
+                )}
+
+                {/* Content */}
+                <div class="flex-grow">
+                  <div class="flex items-center gap-2 mb-2">
+                    <span class="inline-block px-2 py-1 bg-primary/10 rounded text-xs font-semibold text-primary">
+                      {post.month}
+                    </span>
+                    <span class="text-xs text-muted-foreground">{post.year}</span>
+                  </div>
+                  <h3 class="text-xl font-bold text-primary mb-2 group-hover:text-secondary transition-colors">
+                    {post.data.title}
+                  </h3>
+                  <p class="text-sm text-muted-foreground line-clamp-2">
+                    {post.data.description}
+                  </p>
+                </div>
+              </div>
+            </a>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
+
+{/* FILTER VIEW (list view with sort) */}
+{viewMode === 'filter' && (
+  <div class="space-y-8">
+    {sortOrder === 'a-z' ? (
+      <div class="space-y-3">
+        {sortedPosts.map((post) => (
+          <a href={`/HanhTrinh/${post.slug || post.id}`} class="group relative cursor-pointer block">
+            <div class="bg-card p-4 rounded-lg shadow-sm border border-border hover:shadow-md hover:border-secondary/50 transition-all duration-300">
+              <div class="flex items-start justify-between gap-4">
+                <div class="flex-grow">
+                  <h3 class="font-bold text-primary text-lg mb-1 group-hover:text-secondary transition-colors">
+                    {post.data.title}
+                  </h3>
+                  <div class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                    <span class="inline-block px-2 py-1 bg-primary/10 rounded text-xs font-medium text-primary">
+                      {post.month}
+                    </span>
+                    <span>{post.year}</span>
+                  </div>
+                </div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  class="text-secondary flex-shrink-0 group-hover:translate-x-1 transition-transform"
+                >
+                  <path d="m9 18 6-6-6-6"></path>
+                </svg>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    ) : (
+      Object.entries(groupedByYear).map(([year, posts]) => (
+        <div>
+          <div class="mb-6">
+            <h2 class="text-2xl font-bold text-primary">{year}</h2>
+            <div class="h-0.5 w-16 bg-secondary rounded-full mt-2"></div>
+          </div>
+          <div class="space-y-3">
+            {posts.map((post) => (
+              <a href={`/HanhTrinh/${post.slug || post.id}`} class="group relative cursor-pointer block">
+                <div class="bg-card p-4 rounded-lg shadow-sm border border-border hover:shadow-md hover:border-secondary/50 transition-all duration-300">
+                  <div class="flex items-start justify-between gap-4">
+                    <div class="flex-grow">
+                      <h3 class="font-bold text-primary text-lg mb-1 group-hover:text-secondary transition-colors">
+                        {post.data.title}
+                      </h3>
+                      <div class="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                        <span class="inline-block px-2 py-1 bg-primary/10 rounded text-xs font-medium text-primary">
+                          {post.month}
+                        </span>
+                      </div>
+                    </div>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      class="text-secondary flex-shrink-0 group-hover:translate-x-1 transition-transform"
+                    >
+                      <path d="m9 18 6-6-6-6"></path>
+                    </svg>
+                  </div>
+                </div>
+              </a>
+            ))}
+          </div>
+        </div>
+      ))
+    )}
+  </div>
+)}

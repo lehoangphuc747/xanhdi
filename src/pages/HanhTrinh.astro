@@ -1,0 +1,196 @@
+---
+import LayoutHanhTrinh from '../layouts/LayoutHanhTrinh.astro';
+import TimelineAllViews from '../components/HanhTrinh/TimelineAllViews.astro';
+import HanhTrinhScript from '../components/HanhTrinh/HanhTrinhScript.astro';
+import { getCollection } from 'astro:content';
+
+// Load journey posts from MDX collection
+const allPosts = await getCollection('hanh-trinh');
+
+// Helper function to get Vietnamese month name
+const getVietnameseMonth = (date: Date) => {
+  const monthNumber = date.getMonth() + 1;
+  const months: { [key: number]: string } = {
+    1: 'Tháng 1', 2: 'Tháng 2', 3: 'Tháng 3', 4: 'Tháng 4',
+    5: 'Tháng 5', 6: 'Tháng 6', 7: 'Tháng 7', 8: 'Tháng 8',
+    9: 'Tháng 9', 10: 'Tháng 10', 11: 'Tháng 11', 12: 'Tháng 12'
+  };
+  return months[monthNumber] || `Tháng ${monthNumber}`;
+};
+
+// Organize posts by year and month
+const organizeByYearMonth = (posts: typeof allPosts) => {
+  const organized: { [key: number]: { [key: string]: typeof posts } } = {};
+  
+  posts.forEach(post => {
+    const year = post.data.pubDate.getFullYear();
+    const vietnameseMonth = getVietnameseMonth(post.data.pubDate);
+    
+    if (!organized[year]) {
+      organized[year] = {};
+    }
+    if (!organized[year][vietnameseMonth]) {
+      organized[year][vietnameseMonth] = [];
+    }
+    organized[year][vietnameseMonth].push(post);
+  });
+  
+  return organized;
+};
+
+const organizedPosts = organizeByYearMonth(allPosts);
+
+// Convert to timeline structure with month and journey count
+const journeyTimeline = Object.entries(organizedPosts)
+  .sort(([yearA], [yearB]) => Number(yearB) - Number(yearA))
+  .map(([year, months]) => ({
+    year: Number(year),
+    months: Object.entries(months)
+      .map(([month, posts]) => ({
+        month,
+        journeys: posts.length,
+        journeyName: posts.length === 1 ? posts[0].data.title : `${posts.length} hành trình`,
+        posts
+      }))
+      .sort((a, b) => {
+        // Sort months by date descending
+        const monthA = new Date(a.posts[0].data.pubDate).getMonth();
+        const monthB = new Date(b.posts[0].data.pubDate).getMonth();
+        return monthB - monthA;
+      })
+  }))
+  .filter(yearData => yearData.months.length > 0);
+
+// Sort functions
+const sortNewest = (data) => {
+  const sortedYears = [...data].sort((a, b) => b.year - a.year);
+  return sortedYears.map(year => ({
+    ...year,
+    months: [...year.months].sort((a, b) => {
+      return b.month.localeCompare(a.month);
+    })
+  }));
+};
+
+const sortOldest = (data) => {
+  const sortedYears = [...data].sort((a, b) => a.year - b.year);
+  return sortedYears.map(year => ({
+    ...year,
+    months: [...year.months].sort((a, b) => {
+      return a.month.localeCompare(b.month);
+    })
+  }));
+};
+
+const sortAZ = (data) => {
+  return data.map(year => ({
+    ...year,
+    months: [...year.months].sort((a, b) => {
+      return a.journeyName.localeCompare(b.journeyName, 'vi');
+    })
+  }));
+};
+
+const timelineNewest = sortNewest(journeyTimeline);
+const timelineOldest = sortOldest(journeyTimeline);
+const timelineAZ = sortAZ(journeyTimeline);
+---
+
+<LayoutHanhTrinh>
+  <div class="container mx-auto px-4 sm:px-6 py-8">
+    {/* Controls */}
+    <div class="w-full relative mb-8">
+      <div class="hidden sm:flex flex-col sm:flex-row sm:justify-center gap-3 bg-background/95 backdrop-blur-sm p-4 rounded-lg shadow-lg border w-full z-50 relative">
+        {/* View Mode Selector */}
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <div class="flex gap-2 w-full sm:w-auto">
+            <button data-view="timeline" class="whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 rounded-md px-3 flex-1 sm:flex-none flex items-center justify-center gap-2 min-w-[100px]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                <path d="M21 12h-8"></path>
+                <path d="M21 6H8"></path>
+                <path d="M21 18h-8"></path>
+                <path d="M3 6v4c0 1.1.9 2 2 2h3"></path>
+                <path d="M3 10v6c0 1.1.9 2 2 2h3"></path>
+              </svg>
+              <span>Timeline</span>
+            </button>
+            <button data-view="grid" class="whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 flex-1 sm:flex-none flex items-center justify-center gap-2 min-w-[100px]">
+              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+                <rect width="18" height="18" x="3" y="3" rx="2"></rect>
+                <path d="M3 9h18"></path>
+                <path d="M3 15h18"></path>
+                <path d="M9 3v18"></path>
+                <path d="M15 3v18"></path>
+              </svg>
+              <span>Grid</span>
+            </button>
+          </div>
+        </div>
+
+        {/* Expand Button */}
+        <button data-expand="true" class="expand-btn whitespace-nowrap text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-9 rounded-md px-3 flex-1 sm:flex-none flex items-center justify-center gap-2 min-w-[120px]">
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="w-4 h-4">
+            <path d="m9 18 6-6-6-6"></path>
+          </svg>
+          <span class="expand-text">Mở rộng</span>
+        </button>
+
+        {/* Sort Selector */}
+        <div class="w-full sm:w-[140px]">
+          <select data-sort="select" class="flex h-9 items-center justify-between rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 w-full">
+            <option value="newest">Mới nhất</option>
+            <option value="oldest">Cũ nhất</option>
+            <option value="a-z">A-Z</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    {/* Timeline View (default) */}
+    <div id="timeline-view" class="view-container">
+      <div id="timeline-newest">
+        <TimelineAllViews timeline={timelineNewest} viewMode="timeline" />
+      </div>
+      <div id="timeline-oldest" class="hidden">
+        <TimelineAllViews timeline={timelineOldest} viewMode="timeline" />
+      </div>
+      <div id="timeline-az" class="hidden">
+        <TimelineAllViews timeline={timelineAZ} viewMode="timeline" />
+      </div>
+    </div>
+
+    {/* Grid View */}
+    <div id="grid-view" class="view-container hidden">
+      <div id="grid-newest">
+        <TimelineAllViews timeline={timelineNewest} viewMode="grid" sortOrder="newest" />
+      </div>
+      <div id="grid-oldest" class="hidden">
+        <TimelineAllViews timeline={timelineOldest} viewMode="grid" sortOrder="oldest" />
+      </div>
+      <div id="grid-az" class="hidden">
+        <TimelineAllViews timeline={timelineAZ} viewMode="grid" sortOrder="a-z" />
+      </div>
+    </div>
+
+    {/* Expanded View */}
+    <div id="expanded-view" class="view-container hidden">
+      <TimelineAllViews timeline={journeyTimeline} viewMode="expanded" sortOrder="newest" />
+    </div>
+
+    {/* Filter View */}
+    <div id="filter-view" class="view-container hidden">
+      <TimelineAllViews timeline={journeyTimeline} viewMode="filter" sortOrder="newest" />
+    </div>
+  </div>
+
+  {/* Scroll to Top Button */}
+  <button class="inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-10 fixed bottom-4 right-4 p-2 rounded-full shadow-lg transition-opacity duration-300 z-50 opacity-0 pointer-events-none" id="scrollToTopBtn">
+    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="h-6 w-6">
+      <path d="m5 12 7-7 7 7"></path>
+      <path d="M12 19V5"></path>
+    </svg>
+    <span class="sr-only">Cuộn lên đầu trang</span>
+  </button>
+
+  <HanhTrinhScript />
+</LayoutHanhTrinh>

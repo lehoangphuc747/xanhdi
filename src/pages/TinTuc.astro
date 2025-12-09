@@ -1,0 +1,181 @@
+---
+import LayoutTinTuc from '../layouts/LayoutTinTuc.astro';
+import CardTinTuc from '../components/TinTuc/CardTinTuc.astro';
+import SearchTinTuc from '../components/TinTuc/SearchTinTuc.astro';
+import { getCollection } from 'astro:content';
+
+console.log('=== DEBUG: Starting TinTuc.astro ===');
+
+// Get all news posts
+let allPosts;
+try {
+  allPosts = await getCollection('tin-tuc');
+  console.log('✓ getCollection success. Total posts:', allPosts.length);
+  console.log('Raw allPosts:', JSON.stringify(allPosts, null, 2));
+} catch (error) {
+  console.error('✗ Error in getCollection:', error);
+  throw error;
+}
+
+console.log('\n=== Inspecting each post ===');
+allPosts.forEach((post, index) => {
+  console.log(`\nPost #${index + 1}:`);
+  console.log('  - post object:', post);
+  console.log('  - post.id:', post?.id);
+  console.log('  - post.data:', post?.data);
+  if (post?.data) {
+    console.log('  - post.data.title:', post.data.title);
+    console.log('  - post.data.pubDate:', post.data.pubDate);
+    console.log('  - post.data.description:', post.data.description);
+  } else {
+    console.error('  ✗ post.data is NULL or undefined!');
+  }
+});
+
+// Filter out any null/invalid posts
+const validPosts = allPosts.filter(post => {
+  if (!post) {
+    console.error('✗ Found null post');
+    return false;
+  }
+  if (!post.data) {
+    console.error('✗ Found post with null data:', post.id);
+    return false;
+  }
+  return true;
+});
+
+console.log(`\n✓ Valid posts: ${validPosts.length} / ${allPosts.length}`);
+
+// Sort by date (newest first)
+const sortedPosts = validPosts.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+console.log('\n=== Final sorted posts ===');
+sortedPosts.forEach((post, index) => {
+  console.log(`${index + 1}. ${post.data.title} (${post.data.pubDate})`);
+});
+console.log('=== END DEBUG ===\n');
+---
+
+<LayoutTinTuc title="Tin Tức - Xanh Đi">
+  <div class="container mx-auto px-4 sm:px-6 py-8">
+    {/* Header */}
+    <div class="mb-8 text-center">
+      <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-4">
+        Tin Tức
+      </h1>
+      <p class="text-lg text-muted-foreground max-w-3xl mx-auto">
+        Cập nhật những thông tin mới nhất về các hoạt động, sự kiện và dự án của Xanh Đi
+      </p>
+      <div class="text-sm text-muted-foreground mt-2">
+        Tổng số tin: <span class="font-semibold text-primary">{sortedPosts.length}</span>
+      </div>
+    </div>
+
+    {/* Search */}
+    <SearchTinTuc />
+
+    {/* News Grid */}
+    <div id="news-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      {sortedPosts.map((post) => (
+        <div class="news-item" data-title={post.data.title.toLowerCase()} data-description={post.data.description.toLowerCase()}>
+          <CardTinTuc
+            title={post.data.title}
+            description={post.data.description}
+            image={post.data.image}
+            pubDate={post.data.pubDate}
+            tags={post.data.tags}
+            slug={post.id}
+          />
+        </div>
+      ))}
+    </div>
+
+    {/* No Results Message */}
+    <div id="no-results" class="hidden text-center py-12">
+      <div class="text-muted-foreground">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" class="mx-auto mb-4 opacity-50">
+          <circle cx="11" cy="11" r="8"></circle>
+          <path d="m21 21-4.35-4.35"></path>
+        </svg>
+        <p class="text-lg font-medium">Không tìm thấy tin tức phù hợp</p>
+        <p class="text-sm mt-2">Thử tìm kiếm với từ khóa khác</p>
+      </div>
+    </div>
+  </div>
+</LayoutTinTuc>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const searchInput = document.getElementById('search-input') as HTMLInputElement;
+    const clearBtn = document.getElementById('clear-search');
+    const searchResults = document.getElementById('search-results');
+    const resultsCount = document.getElementById('results-count');
+    const newsItems = document.querySelectorAll('.news-item');
+    const noResults = document.getElementById('no-results');
+    const newsGrid = document.getElementById('news-grid');
+    
+    let currentSearch = '';
+
+    function filterNews() {
+      let visibleCount = 0;
+      
+      newsItems.forEach((item) => {
+        const title = item.getAttribute('data-title') || '';
+        const description = item.getAttribute('data-description') || '';
+        
+        const matchesSearch = !currentSearch || 
+          title.includes(currentSearch) || 
+          description.includes(currentSearch);
+        
+        if (matchesSearch) {
+          (item as HTMLElement).style.display = '';
+          visibleCount++;
+        } else {
+          (item as HTMLElement).style.display = 'none';
+        }
+      });
+      
+      // Update results count
+      if (currentSearch && resultsCount) {
+        resultsCount.textContent = visibleCount.toString();
+        searchResults?.classList.remove('hidden');
+      } else {
+        searchResults?.classList.add('hidden');
+      }
+      
+      // Show/hide no results message
+      if (visibleCount === 0) {
+        noResults?.classList.remove('hidden');
+        newsGrid?.classList.add('opacity-50');
+      } else {
+        noResults?.classList.add('hidden');
+        newsGrid?.classList.remove('opacity-50');
+      }
+    }
+
+    // Search functionality
+    searchInput?.addEventListener('input', (e) => {
+      currentSearch = (e.target as HTMLInputElement).value.toLowerCase().trim();
+      
+      if (currentSearch) {
+        clearBtn?.classList.remove('hidden');
+      } else {
+        clearBtn?.classList.add('hidden');
+      }
+      
+      filterNews();
+    });
+
+    // Clear search
+    clearBtn?.addEventListener('click', () => {
+      searchInput.value = '';
+      currentSearch = '';
+      clearBtn.classList.add('hidden');
+      searchResults?.classList.add('hidden');
+      filterNews();
+    });
+  });
+</script>

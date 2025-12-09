@@ -1,0 +1,196 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import Header from '../../components/Header.astro';
+import Footer from '../../components/Footer.astro';
+import ImageGallery from '../../components/ImageGallery.astro';
+import { getCollection } from 'astro:content';
+import '../../styles/markdown.css';
+
+// Generate static paths for all posts
+export async function getStaticPaths() {
+  const allPosts = await getCollection('hanh-trinh');
+  
+  return allPosts.map((post) => ({
+    params: { slug: post.id },
+    props: { post },
+  }));
+}
+
+// Get all posts for navigation
+const allPosts = await getCollection('hanh-trinh');
+
+interface Props {
+  post: (typeof allPosts)[0];
+}
+
+const { post } = Astro.props;
+
+// Import and render the MDX content dynamically
+const mdxModule = await import(`../../content/hanh-trinh/${post.id}.mdx`);
+const Content = mdxModule.default;
+
+// Get previous and next posts (sorted by date)
+const sortedPosts = allPosts.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+const currentIndex = sortedPosts.findIndex((p) => p.id === post.id);
+const prevPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
+const nextPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
+
+// Format date
+const formatDate = (date: Date) => {
+  return new Intl.DateTimeFormat('vi-VN', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+  }).format(date);
+};
+---
+
+<Layout title={post.data.title}>
+  <div class="min-h-screen flex flex-col">
+    <Header />
+
+    <main class="flex-grow bg-gradient-to-br from-background via-secondary/5 to-primary/5 pt-24">
+      <article class="container mx-auto px-4 sm:px-6 py-8 max-w-4xl">
+        {/* Back Button */}
+        <a
+          href="/HanhTrinh"
+          class="inline-flex items-center gap-2 text-secondary hover:text-primary transition-colors mb-8"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="m15 18-6-6 6-6"></path>
+          </svg>
+          <span>Quay lại</span>
+        </a>
+
+        {/* Header */}
+        <div class="mb-8 text-center">
+          <h1 class="text-4xl sm:text-5xl font-bold text-primary mb-4">
+            {post.data.title}
+          </h1>
+
+          {/* Meta Info */}
+          <div class="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground border-b border-border/50 pb-4">
+            <div class="flex items-center gap-2">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <polyline points="12 6 12 12 16 14"></polyline>
+              </svg>
+              <time datetime={post.data.pubDate.toISOString()}>
+                {formatDate(post.data.pubDate)}
+              </time>
+            </div>
+
+            {post.data.author && (
+              <div class="flex items-center gap-2">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>{post.data.author}</span>
+              </div>
+            )}
+
+            {post.data.tags && post.data.tags.length > 0 && (
+              <div class="flex flex-wrap gap-2">
+                {post.data.tags.map((tag) => (
+                  <span class="inline-block px-2 py-1 bg-primary/10 rounded-full text-xs font-medium text-primary">
+                    {tag}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Featured Image */}
+        {post.data.previewImages && post.data.previewImages.length > 0 ? (
+          <ImageGallery images={post.data.previewImages} />
+        ) : post.data.image ? (
+          <div class="mb-8 rounded-lg overflow-hidden">
+            <img
+              src={post.data.image}
+              alt={post.data.title}
+              class="w-full h-96 object-cover"
+            />
+          </div>
+        ) : null}
+
+        {/* Description */}
+        {post.data.description && (
+          <p class="text-lg text-muted-foreground mb-8 italic text-center">
+            {post.data.description}
+          </p>
+        )}
+
+        {/* Content */}
+        <div class="markdown-content mb-12">
+          <Content />
+        </div>
+
+        {/* Navigation */}
+        {(prevPost || nextPost) && (
+          <nav class="grid grid-cols-1 sm:grid-cols-2 gap-4 border-t border-border/50 pt-8">
+            {prevPost ? (
+              <a
+                href={`/HanhTrinh/${prevPost.id}`}
+                class="group p-4 rounded-lg border border-border hover:border-secondary/50 transition-colors"
+              >
+                <div class="text-xs text-muted-foreground mb-2">← Bài trước</div>
+                <h3 class="font-semibold text-primary group-hover:text-secondary transition-colors line-clamp-2">
+                  {prevPost.data.title}
+                </h3>
+              </a>
+            ) : (
+              <div></div>
+            )}
+
+            {nextPost ? (
+              <a
+                href={`/HanhTrinh/${nextPost.id}`}
+                class="group p-4 rounded-lg border border-border hover:border-secondary/50 transition-colors text-right"
+              >
+                <div class="text-xs text-muted-foreground mb-2">Bài sau →</div>
+                <h3 class="font-semibold text-primary group-hover:text-secondary transition-colors line-clamp-2">
+                  {nextPost.data.title}
+                </h3>
+              </a>
+            ) : (
+              <div></div>
+            )}
+          </nav>
+        )}
+      </article>
+    </main>
+
+
+    <Footer />
+  </div>
+</Layout>

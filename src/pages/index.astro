@@ -1,11 +1,18 @@
 ---
-import Welcome from '../components/Welcome.astro';
 import Layout from '../layouts/Layout.astro';
-
-// Welcome to Astro! Wondering what to do next? Check out the Astro documentation at https://docs.astro.build
-// Don't want to use any of this? Delete everything in this file, the `assets`, `components`, and `layouts` directories, and start fresh.
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import HeroSection from '../components/TrangChu/HeroSection.astro';
+import HomeTinTuc from '../components/TrangChu/HomeTinTuc.astro';
+import HomeHanhTrinh from '../components/TrangChu/HomeHanhTrinh.astro';
+import HomeSection2 from '../components/TrangChu/HomeSection2.astro';
 ---
 
-<Layout>
-	<Welcome />
+<Layout title="Xanh Đi - Hành Trình Xanh, Tương Lai Bền Vững">
+	<Header />
+	<HeroSection />
+	<HomeSection2 />
+	<HomeTinTuc />
+	<HomeHanhTrinh />
+	<Footer />
 </Layout>
