@@ -56,37 +56,37 @@
   --tw-contain-paint: ;
   --tw-contain-style: ;
 
-  /* Primary Color Palette */
-  --background: 36 38% 96%;
-  --foreground: 95 44% 15%;
-  --card: 40 50% 89%;
-  --card-foreground: 95 44% 15%;
-  --popover: 40 50% 89%;
-  --popover-foreground: 95 44% 15%;
-  --primary: 95 44% 20%;
-  --primary-foreground: 36 38% 96%;
-  --secondary: 33 90% 53%;
-  --secondary-foreground: 95 44% 15%;
-  --muted: 40 50% 89%;
-  --muted-foreground: 95 15% 40%;
-  --accent: 40 50% 89%;
-  --accent-foreground: 95 44% 15%;
-  --destructive: 0 84.2% 60.2%;
-  --destructive-foreground: 210 40% 98%;
-  --border: 40 50% 80%;
-  --input: 40 50% 80%;
-  --ring: 95 44% 20%;
-  --radius: 0.5rem;
+  /* Primary Color Palette - Xanh Thiện Nguyện Brand */
+  --background: 150 30% 97%;              /* Light mint cream */
+  --foreground: 160 50% 15%;              /* Deep forest green */
+  --card: 150 20% 95%;                    /* Soft green-white */
+  --card-foreground: 160 50% 15%;         /* Deep forest green */
+  --popover: 150 20% 95%;                 /* Soft green-white */
+  --popover-foreground: 160 50% 15%;      /* Deep forest green */
+  --primary: 156 50% 35%;                 /* Emerald green #2D6A4F */
+  --primary-foreground: 150 30% 97%;      /* Light mint cream */
+  --secondary: 150 55% 55%;               /* Sage green #52B788 */
+  --secondary-foreground: 160 50% 15%;    /* Deep forest green */
+  --muted: 150 20% 92%;                   /* Very light green */
+  --muted-foreground: 160 20% 45%;        /* Muted green-gray */
+  --accent: 27 60% 60%;                   /* Warm terracotta #D4895B */
+  --accent-foreground: 160 50% 15%;       /* Deep forest green */
+  --destructive: 0 84.2% 60.2%;           /* Red for errors */
+  --destructive-foreground: 210 40% 98%;  /* White */
+  --border: 150 25% 85%;                  /* Light green border */
+  --input: 150 25% 85%;                   /* Light green input */
+  --ring: 156 50% 35%;                    /* Emerald green ring */
+  --radius: 0.75rem;                      /* Rounded corners */
 
   /* Sidebar Colors */
-  --sidebar-background: 95 44% 20%;
-  --sidebar-foreground: 36 38% 96%;
-  --sidebar-primary: 33 90% 53%;
-  --sidebar-primary-foreground: 95 44% 15%;
-  --sidebar-accent: 95 44% 30%;
-  --sidebar-accent-foreground: 36 38% 96%;
-  --sidebar-border: 95 44% 25%;
-  --sidebar-ring: 33 90% 53%;
+  --sidebar-background: 156 50% 35%;      /* Emerald green */
+  --sidebar-foreground: 150 30% 97%;      /* Light mint cream */
+  --sidebar-primary: 150 55% 55%;         /* Sage green */
+  --sidebar-primary-foreground: 160 50% 15%; /* Deep forest green */
+  --sidebar-accent: 156 50% 28%;          /* Darker emerald */
+  --sidebar-accent-foreground: 150 30% 97%; /* Light mint cream */
+  --sidebar-border: 156 50% 30%;          /* Medium emerald */
+  --sidebar-ring: 150 55% 55%;            /* Sage green */
 
   /* Web Highlights Color Palette */
   --wh-slate-50: #f8fafc;

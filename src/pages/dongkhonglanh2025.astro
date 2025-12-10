@@ -2,7 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title="ĐÔNG KHÔNG LẠNH 2025 - Xanh Đi">
+<Layout title="ĐÔNG KHÔNG LẠNH 2025 - Xanh Thiện Nguyện">
   <!-- Snowfall Animation Container -->
   <div class="snowfall-container"></div>
   
@@ -10,168 +10,129 @@ import Layout from '../layouts/Layout.astro';
     <div class="container mx-auto px-4 sm:px-6">
       <div class="max-w-2xl mx-auto">
         {/* Header */}
-        <div class="mb-12 text-center winter-header">
+        <div class="mb-8 text-center winter-header">
           <h1 class="winter-title">
             ĐÔNG KHÔNG LẠNH 2025
           </h1>
           <p class="winter-subtitle">
-            Chương trình hỗ trợ cộng đồng trong mùa đông
+            Acoustics Show - Khi Tim Ta Đủ Ấm
           </p>
+          <p class="winter-tagline">
+            CLB Xanh Thiện Nguyện
+          </p>
+        </div>
+
+        {/* Event Info Card */}
+        <div class="event-info-card mb-8">
+          <p class="event-intro">
+            Chốc chốc mỗi năm đông về, cái lạnh se sắt len lỏi qua từng gian nhà. Chẳng phải ai cũng có một mái ấm đủ đầy, một bàn tay đủ ấm và một ánh nhìn đủ thương chính là hơi ấm giữa ngày đông giá rét.
+          </p>
+          <p class="event-highlight">
+            🎵 Đêm nhạc gây quỹ "Đông Không Lạnh khi ta có nhau"
+          </p>
+          <div class="event-details">
+            <div class="detail-item">
+              <span class="detail-icon">📅</span>
+              <span><strong>Thời gian:</strong> 21/12/2025 (19h00 - 21h30)</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">📍</span>
+              <span><strong>Địa điểm:</strong> Homestay Làng Mắm, Huỳnh Tấn Phát, Hoà Hiệp Trung, Đông Hòa</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">⏰</span>
+              <span><strong>Hạn đăng ký:</strong> 13/12/2025 - 20/12/2025 (23h59')</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-icon">🎫</span>
+              <span><strong>Quyền lợi:</strong> 1 đồ uống + 1 bánh</span>
+            </div>
+          </div>
         </div>
 
         {/* Form Container */}
         <div class="winter-card">
+          <h2 class="form-title">Đăng Ký Tham Gia</h2>
           <form 
             id="dongkhonglanh-form"
           >
             
-            {/* Câu hỏi 1: Radio với giá trị a, b, B, d */}
+            {/* Field 1: Họ và tên */}
             <div class="form-group">
-              <label class="form-label">
-                Câu hỏi không có tiêu đề <span class="required-mark">*</span>
-              </label>
-              <div class="radio-group">
-                <div class="radio-item">
-                  <input 
-                    type="radio" 
-                    id="q1-a" 
-                    name="entry.740864047" 
-                    value="a"
-                    required
-                    class="radio-input"
-                  />
-                  <label for="q1-a" class="radio-label">
-                    a
-                  </label>
-                </div>
-                <div class="radio-item">
-                  <input 
-                    type="radio" 
-                    id="q1-b" 
-                    name="entry.740864047" 
-                    value="b"
-                    class="radio-input"
-                  />
-                  <label for="q1-b" class="radio-label">
-                    b
-                  </label>
-                </div>
-                <div class="radio-item">
-                  <input 
-                    type="radio" 
-                    id="q1-B" 
-                    name="entry.740864047" 
-                    value="B"
-                    class="radio-input"
-                  />
-                  <label for="q1-B" class="radio-label">
-                    B
-                  </label>
-                </div>
-                <div class="radio-item">
-                  <input 
-                    type="radio" 
-                    id="q1-d" 
-                    name="entry.740864047" 
-                    value="d"
-                    class="radio-input"
-                  />
-                  <label for="q1-d" class="radio-label">
-                    d
-                  </label>
-                </div>
-              </div>
-            </div>
-            
-            {/* Câu hỏi 2: Text input */}
-            <div class="form-group">
-              <label for="field2" class="form-label">
-                <span class="required-mark">*</span>
+              <label for="field-name" class="form-label">
+                Họ và tên <span class="required-mark">*</span>
               </label>
               <input 
                 type="text" 
-                id="field2" 
-                name="entry.1864959661" 
+                id="field-name" 
+                name="entry.1010974714" 
                 required
                 class="text-input"
-                placeholder="Câu trả lời của bạn"
+                placeholder="Nhập họ và tên của bạn"
               />
             </div>
             
-            {/* Câu hỏi 3: Checkboxes */}
+            {/* Field 2: Số điện thoại */}
             <div class="form-group">
-              <label class="form-label">
+              <label for="field-phone" class="form-label">
+                Số điện thoại <span class="required-mark">*</span>
               </label>
-              <div class="checkbox-group">
-                <div class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    id="option1" 
-                    name="entry.1887314237" 
-                    value="Tùy chọn 1"
-                    class="checkbox-input"
-                  />
-                  <label for="option1" class="checkbox-label">
-                    Tùy chọn 1
-                  </label>
-                </div>
-                <div class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    id="option2" 
-                    name="entry.1887314237" 
-                    value="Tùy chọn 2"
-                    class="checkbox-input"
-                  />
-                  <label for="option2" class="checkbox-label">
-                    Tùy chọn 2
-                  </label>
-                </div>
-                <div class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    id="option3" 
-                    name="entry.1887314237" 
-                    value="Tùy chọn 3"
-                    class="checkbox-input"
-                  />
-                  <label for="option3" class="checkbox-label">
-                    Tùy chọn 3
-                  </label>
-                </div>
-                <div class="checkbox-item">
-                  <input 
-                    type="checkbox" 
-                    id="option4" 
-                    name="entry.1887314237" 
-                    value="Tùy chọn 4"
-                    class="checkbox-input"
-                  />
-                  <label for="option4" class="checkbox-label">
-                    Tùy chọn 4
-                  </label>
-                </div>
-              </div>
+              <input 
+                type="text" 
+                id="field-phone" 
+                name="entry.904298601" 
+                required
+                class="text-input"
+                placeholder="0123456789"
+                pattern="[0-9]{10}"
+                inputmode="numeric"
+                maxlength="10"
+              />
             </div>
             
-            {/* Câu hỏi 4: Radio button đơn */}
+            {/* Field 3: Email */}
             <div class="form-group">
-              <label class="form-label">
+              <label for="field-email" class="form-label">
+                Email <span class="required-mark">*</span>
               </label>
-              <div class="radio-group">
-                <div class="radio-item">
-                  <input 
-                    type="radio" 
-                    id="choice1" 
-                    name="entry.1752870187" 
-                    value="Tùy chọn 1"
-                    class="radio-input"
-                  />
-                  <label for="choice1" class="radio-label">
-                    Tùy chọn 1
-                  </label>
-                </div>
-              </div>
+              <input 
+                type="email" 
+                id="field-email" 
+                name="entry.698410166" 
+                required
+                class="text-input"
+                placeholder="example@gmail.com"
+              />
+            </div>
+            
+            {/* Field 4: Năm sinh */}
+            <div class="form-group">
+              <label for="field-year" class="form-label">
+                Năm sinh <span class="required-mark">*</span>
+              </label>
+              <input 
+                type="text" 
+                id="field-year" 
+                name="entry.734064854" 
+                required
+                class="text-input"
+                placeholder="2001"
+                pattern="[0-9]{4}"
+                inputmode="numeric"
+                maxlength="4"
+              />
+            </div>
+            
+            {/* Field 5: Checkbox/Hidden */}
+            <div class="form-group" style="display: none;">
+              <input 
+                type="checkbox" 
+                id="field-confirm" 
+                name="entry.275385288" 
+                value="1"
+                checked
+                class="checkbox-input"
+              />
             </div>
             
             {/* Submit Button */}
@@ -212,24 +173,25 @@ import Layout from '../layouts/Layout.astro';
   </div>
 
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Lora:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Dancing+Script:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Nunito:wght@400;600;700;800&display=swap');
     
-    /* === Color Variables === */
+    /* === Color Variables - Xanh Thiện Nguyện Brand === */
     :root {
-      --ivory: #FFFFF0;
-      --earthy-beige: #E8DCC4;
-      --warm-ash: #C4BDB6;
-      --deep-terracotta: #B85C38;
-      --mustard-yellow: #D4A574;
-      --mulled-wine: #8B4049;
-      --pine-green: #4A5F4F;
-      --mocha-brown: #6B4E3D;
-      --snow-white: rgba(255, 255, 255, 0.9);
+      --brand-primary: #2D6A4F;        /* Emerald green - chính */
+      --brand-secondary: #52B788;      /* Sage green - phụ sáng */
+      --brand-accent: #D4895B;         /* Warm terracotta */
+      --brand-warm: #F4A261;           /* Warm orange */
+      --brand-light: #E8F3EE;          /* Mint cream */
+      --brand-dark: #1B4332;           /* Deep forest */
+      --text-primary: #2C3E50;         /* Dark slate */
+      --text-secondary: #5A6C7D;       /* Muted slate */
+      --white: #FFFFFF;
+      --cream: #FFF8F0;
     }
 
     /* === Background & Scene === */
     .winter-scene {
-      background: linear-gradient(135deg, var(--ivory) 0%, var(--earthy-beige) 50%, var(--warm-ash) 100%);
+      background: linear-gradient(135deg, var(--cream) 0%, var(--brand-light) 50%, #E0F2F1 100%);
       position: relative;
       overflow: hidden;
     }
@@ -298,33 +260,132 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .winter-title {
-      font-family: 'Lora', serif;
+      font-family: 'Nunito', sans-serif;
       font-size: clamp(2.5rem, 6vw, 4rem);
-      font-weight: 700;
-      letter-spacing: 0.05em;
-      color: var(--mocha-brown);
-      text-shadow: 2px 2px 4px rgba(107, 78, 61, 0.1);
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      color: var(--brand-primary);
+      text-shadow: 0 2px 10px rgba(45, 106, 79, 0.15);
       margin-bottom: 1rem;
-      line-height: 1.2;
+      line-height: 1.1;
     }
 
     .winter-subtitle {
-      font-family: 'Dancing Script', cursive;
+      font-family: 'Quicksand', sans-serif;
       font-size: clamp(1.25rem, 3vw, 1.75rem);
       font-weight: 600;
-      color: var(--deep-terracotta);
-      margin-bottom: 0;
+      color: var(--brand-accent);
+      margin-bottom: 0.5rem;
+    }
+
+    .winter-tagline {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--brand-secondary);
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+    }
+
+    /* === Event Info Card === */
+    .event-info-card {
+      background: linear-gradient(135deg, rgba(82, 183, 136, 0.08) 0%, rgba(255, 255, 255, 0.95) 100%);
+      border-radius: 20px;
+      padding: 2rem;
+      border: 2px solid rgba(82, 183, 136, 0.3);
+      position: relative;
+      z-index: 10;
+      box-shadow: 0 8px 30px rgba(45, 106, 79, 0.1);
+    }
+
+    .event-intro {
+      font-family: 'Quicksand', sans-serif;
+      font-size: 1rem;
+      color: var(--text-primary);
+      line-height: 1.8;
+      margin-bottom: 1.25rem;
+      text-align: justify;
+    }
+
+    .event-highlight {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--brand-primary);
+      text-align: center;
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background: linear-gradient(135deg, var(--brand-warm), var(--brand-accent));
+      background-clip: text;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      border: 2px solid var(--brand-secondary);
+      border-radius: 12px;
+      background-color: rgba(82, 183, 136, 0.1);
+    }
+
+    .event-details {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+    }
+
+    .detail-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
+      color: var(--text-primary);
+      background: var(--white);
+      padding: 0.75rem 1rem;
+      border-radius: 10px;
+      border-left: 3px solid var(--brand-secondary);
+    }
+
+    .detail-icon {
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+
+    .detail-item strong {
+      color: var(--brand-primary);
+      font-weight: 700;
     }
 
     /* === Form Card === */
     .winter-card {
-      background: rgba(255, 255, 255, 0.75);
-      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 24px;
       padding: 3rem 2.5rem;
-      box-shadow: 0 10px 40px rgba(107, 78, 61, 0.15);
-      border: 1px solid rgba(196, 189, 182, 0.3);
+      box-shadow: 0 15px 50px rgba(45, 106, 79, 0.15);
+      border: 2px solid var(--brand-secondary);
       position: relative;
       z-index: 10;
+    }
+
+    .form-title {
+      font-family: 'Nunito', sans-serif;
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--brand-primary);
+      text-align: center;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid var(--brand-secondary);
+      position: relative;
+    }
+
+    .form-title::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 80px;
+      height: 3px;
+      background: var(--brand-accent);
+      border-radius: 2px;
     }
 
 
@@ -337,44 +398,45 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .form-label {
-      font-family: 'Lora', serif;
+      font-family: 'Quicksand', sans-serif;
       font-size: 1rem;
       font-weight: 600;
-      color: var(--mocha-brown);
+      color: var(--brand-primary);
       display: block;
       margin-bottom: 0.75rem;
-      letter-spacing: 0.02em;
+      letter-spacing: 0.01em;
     }
 
     .required-mark {
-      color: var(--mulled-wine);
+      color: var(--brand-accent);
       margin-left: 0.25rem;
     }
 
     /* === Text Input === */
     .text-input {
-      font-family: 'Inter', sans-serif;
+      font-family: 'Quicksand', sans-serif;
       width: 100%;
-      padding: 0.875rem 1.25rem;
-      background: rgba(255, 255, 255, 0.7);
-      border: 2px solid var(--warm-ash);
-      border-radius: 12px;
+      padding: 1rem 1.25rem;
+      background: var(--white);
+      border: 2px solid var(--brand-light);
+      border-radius: 14px;
       font-size: 1rem;
-      color: var(--mocha-brown);
-      transition: all 0.3s ease;
+      color: var(--text-primary);
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       line-height: 1.6;
     }
 
     .text-input::placeholder {
-      color: rgba(107, 78, 61, 0.5);
-      font-style: italic;
+      color: var(--text-secondary);
+      opacity: 0.6;
     }
 
     .text-input:focus {
       outline: none;
-      border-color: var(--deep-terracotta);
-      background: rgba(255, 255, 255, 0.95);
-      box-shadow: 0 0 0 4px rgba(184, 92, 56, 0.1);
+      border-color: var(--brand-secondary);
+      background: var(--white);
+      box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
+      transform: translateY(-2px);
     }
 
     /* === Radio & Checkbox Groups === */
@@ -464,20 +526,20 @@ import Layout from '../layouts/Layout.astro';
     /* === Submit Button === */
     .winter-button {
       width: 100%;
-      padding: 1rem 2rem;
-      background: linear-gradient(135deg, var(--deep-terracotta) 0%, var(--mulled-wine) 100%);
+      padding: 1.125rem 2rem;
+      background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
       border: none;
-      border-radius: 12px;
-      font-family: 'Lora', serif;
+      border-radius: 14px;
+      font-family: 'Nunito', sans-serif;
       font-size: 1.125rem;
-      font-weight: 600;
+      font-weight: 700;
       color: white;
       cursor: pointer;
       position: relative;
       overflow: hidden;
-      transition: all 0.4s ease;
-      box-shadow: 0 4px 20px rgba(184, 92, 56, 0.3);
-      margin-top: 1rem;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 8px 25px rgba(45, 106, 79, 0.3);
+      margin-top: 1.5rem;
     }
 
     .button-text {
@@ -486,14 +548,30 @@ import Layout from '../layouts/Layout.astro';
       display: block;
     }
 
-
+    .winter-button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(135deg, var(--brand-secondary) 0%, var(--brand-accent) 100%);
+      opacity: 0;
+      transition: opacity 0.3s ease;
+      z-index: 1;
+    }
 
     .winter-button:hover {
-      opacity: 0.9;
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(45, 106, 79, 0.4);
+    }
+
+    .winter-button:hover::before {
+      opacity: 1;
     }
 
     .winter-button:active {
-      opacity: 0.8;
+      transform: translateY(-1px);
     }
 
     /* === Messages === */
@@ -521,29 +599,29 @@ import Layout from '../layouts/Layout.astro';
     }
 
     .success-message {
-      background: rgba(74, 95, 79, 0.1);
-      border: 2px solid var(--pine-green);
+      background: linear-gradient(135deg, rgba(82, 183, 136, 0.1) 0%, rgba(45, 106, 79, 0.05) 100%);
+      border: 2px solid var(--brand-secondary);
     }
 
     .error-message {
-      background: rgba(139, 64, 73, 0.1);
-      border: 2px solid var(--mulled-wine);
+      background: rgba(244, 162, 97, 0.1);
+      border: 2px solid var(--brand-accent);
     }
 
     .message-title {
-      font-family: 'Lora', serif;
+      font-family: 'Nunito', sans-serif;
       font-size: 1.125rem;
-      font-weight: 600;
+      font-weight: 700;
       text-align: center;
       margin-bottom: 0.5rem;
-      color: var(--mocha-brown);
+      color: var(--brand-primary);
     }
 
     .message-subtitle {
-      font-family: 'Inter', sans-serif;
-      font-size: 0.925rem;
+      font-family: 'Quicksand', sans-serif;
+      font-size: 0.95rem;
       text-align: center;
-      color: rgba(107, 78, 61, 0.8);
+      color: var(--text-secondary);
       margin: 0;
     }
 
@@ -565,7 +643,7 @@ import Layout from '../layouts/Layout.astro';
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSceSqTicrC7M0G_JWLRlt5ML2tzScnyxILGimAzL1NpgSF1yg/formResponse";
+      const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLScuL1B2BX7-ZKG42MBuu1vWV0WnOhMrLNLsdOfjw_x6r-IjAw/formResponse";
       
       const form = document.getElementById('dongkhonglanh-form') as HTMLFormElement | null;
       const successMessage = document.getElementById('success-message');
@@ -578,26 +656,66 @@ import Layout from '../layouts/Layout.astro';
         successMessage?.classList.add('hidden');
         errorMessage?.classList.add('hidden');
         
-        // Validate text field (entry.740864047) - BÂY GIỜ LÀ RADIO BUTTON
-        const radioQ1 = form.querySelector('input[name="entry.740864047"]:checked');
-        if (!radioQ1) {
-          alert('Vui lòng chọn câu trả lời cho câu hỏi đầu tiên!');
+        // Validate name (entry.1010974714)
+        const nameField = form.querySelector('input[name="entry.1010974714"]') as HTMLInputElement;
+        if (!nameField || !nameField.value.trim()) {
+          alert('Vui lòng nhập họ và tên!');
+          nameField?.focus();
           return;
         }
         
-        // Validate text field (entry.1864959661)
-        const textField = form.querySelector('input[name="entry.1864959661"]') as HTMLInputElement;
-        if (!textField || !textField.value.trim()) {
-          alert('Vui lòng nhập câu trả lời!');
-          textField?.focus();
+        // Validate phone (entry.904298601)
+        const phoneField = form.querySelector('input[name="entry.904298601"]') as HTMLInputElement;
+        if (!phoneField || !phoneField.value.trim()) {
+          alert('Vui lòng nhập số điện thoại!');
+          phoneField?.focus();
           return;
         }
         
-        // Checkboxes (entry.1887314237) - KHÔNG BẮT BUỘC
-        // Không cần validate
+        // Validate phone is 10 digits
+        if (!/^[0-9]{10}$/.test(phoneField.value)) {
+          alert('Số điện thoại phải có đúng 10 chữ số!');
+          phoneField?.focus();
+          return;
+        }
         
-        // Radio button (entry.1752870187) - KHÔNG BẮT BUỘC
-        // Không cần validate}
+        // Validate email (entry.698410166)
+        const emailField = form.querySelector('input[name="entry.698410166"]') as HTMLInputElement;
+        if (!emailField || !emailField.value.trim()) {
+          alert('Vui lòng nhập email!');
+          emailField?.focus();
+          return;
+        }
+        
+        // Validate email format - strict validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(emailField.value)) {
+          alert('Email không đúng định dạng! Ví dụ: example@gmail.com');
+          emailField?.focus();
+          return;
+        }
+        
+        // Validate year (entry.734064854)
+        const yearField = form.querySelector('input[name="entry.734064854"]') as HTMLInputElement;
+        if (!yearField || !yearField.value.trim()) {
+          alert('Vui lòng nhập năm sinh!');
+          yearField?.focus();
+          return;
+        }
+        
+        // Validate year is exactly 4 digits
+        if (!/^[0-9]{4}$/.test(yearField.value)) {
+          alert('Năm sinh phải là 4 chữ số!');
+          yearField?.focus();
+          return;
+        }
+        
+        const yearValue = parseInt(yearField.value);
+        if (yearValue < 1900 || yearValue > 2025) {
+          alert('Năm sinh không hợp lệ! Vui lòng nhập năm từ 1900 đến 2025.');
+          yearField?.focus();
+          return;
+        }
         
         try {
           const formData = new FormData(form);
